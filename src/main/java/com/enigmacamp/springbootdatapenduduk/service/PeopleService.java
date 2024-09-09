@@ -18,6 +18,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -66,6 +67,22 @@ public class PeopleService {
 
     public Page<People> findAll(int page, int size) {
         return peopleRepository.findAll(PageRequest.of(Math.max(page - 1, 0), size));
+    }
+
+    public People findByNik(String nik) {
+        return peopleRepository.findByNik(nik);
+    }
+
+    public List<People> findByProvince(Integer provinceId) {
+        return peopleRepository.findByProvinceId(provinceId);
+    }
+
+    public List<People> findByRegency(Integer regencyId) {
+        return peopleRepository.findByRegencyId(regencyId);
+    }
+
+    public List<People> findByDistrict(Integer districtId) {
+        return peopleRepository.findByDistrictId(districtId);
     }
 
     public People findById(Integer id) {

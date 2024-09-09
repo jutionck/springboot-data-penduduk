@@ -9,6 +9,7 @@ import com.enigmacamp.springbootdatapenduduk.entity.model.People;
 import com.enigmacamp.springbootdatapenduduk.service.PeopleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,45 @@ public class PeopleController extends BaseController<People> {
                         "Successfully fetched people")
         );
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/province/{id}")
+    public ResponseEntity<?> getByProvinceHandler(@PathVariable int id) {
+        List<People> people = peopleService.findByProvince(id);
+        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+                new PageImpl<>(people),
+                null,
+                new ResponseStatusDto(
+                        HttpStatus.OK.value(),
+                        "Successfully fetched people by province")
+        );
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/city/{id}")
+    public ResponseEntity<?> getByRegencyHandler(@PathVariable int id) {
+        List<People> people = peopleService.findByRegency(id);
+        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+                new PageImpl<>(people),
+                null,
+                new ResponseStatusDto(
+                        HttpStatus.OK.value(),
+                        "Successfully fetched people by regency")
+        );
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/district/{id}")
+    public ResponseEntity<?> getByDistrictHandler(@PathVariable int id) {
+        List<People> people = peopleService.findByDistrict(id);
+        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+                new PageImpl<>(people),
+                null,
+                new ResponseStatusDto(
+                        HttpStatus.OK.value(),
+                        "Successfully fetched people by district")
+        );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
