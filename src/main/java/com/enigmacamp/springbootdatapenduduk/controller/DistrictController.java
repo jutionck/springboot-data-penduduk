@@ -9,6 +9,7 @@ import com.enigmacamp.springbootdatapenduduk.entity.model.District;
 import com.enigmacamp.springbootdatapenduduk.service.DistrictService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,19 @@ public class DistrictController extends BaseController<District> {
                         "Successfully fetched districts")
         );
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/city/{id}")
+    public ResponseEntity<?> getByRegencyHandler(@PathVariable int id) {
+        List<District> districts = districtService.findDistrictsByRegency(id);
+        ResponseEntityDto<List<District>> response = this.sendPagedResponse(
+                new PageImpl<>(districts),
+                null,
+                new ResponseStatusDto(
+                        HttpStatus.OK.value(),
+                        "Successfully fetched districts")
+        );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

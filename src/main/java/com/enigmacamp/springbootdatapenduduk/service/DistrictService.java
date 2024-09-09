@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class DistrictService implements BaseService<District, Integer> {
@@ -60,6 +62,10 @@ public class DistrictService implements BaseService<District, Integer> {
     @Override
     public Page<District> findAll(int page, int size) {
         return districtRepository.findAll(PageRequest.of(Math.max(page - 1, 0), size));
+    }
+
+    public List<District> findDistrictsByRegency(Integer regencyId) {
+        return districtRepository.findDistrictsByRegencyId(regencyId);
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.enigmacamp.springbootdatapenduduk.entity.model.Regency;
 import com.enigmacamp.springbootdatapenduduk.service.RegencyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,19 @@ public class RegencyController extends BaseController<Regency> {
                         "Successfully fetched regencies")
         );
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/province/{id}")
+    public ResponseEntity<?> getByProvinceHandler(@PathVariable int id) {
+        List<Regency> regencyPage = regencyService.findByProvince(id);
+        ResponseEntityDto<List<Regency>> response = this.sendPagedResponse(
+                new PageImpl<>(regencyPage),
+                null,
+                new ResponseStatusDto(
+                        HttpStatus.OK.value(),
+                        "Successfully fetched regencies")
+        );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
