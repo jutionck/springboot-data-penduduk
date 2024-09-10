@@ -3,6 +3,7 @@ package com.enigmacamp.springbootdatapenduduk.controller;
 import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
 import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.PeopleRequestDto;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
 import com.enigmacamp.springbootdatapenduduk.entity.model.People;
@@ -43,18 +44,19 @@ public class PeopleController extends BaseController<People> {
     @GetMapping(AppRoutes.GET_PEOPLE_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String q
     ) {
-        Page<People> regencyPage = peopleService.findAll(page, size);
+        Page<People> people = peopleService.findAll(new QueryParamDto(q, page, size));
         PaginationDto paginationDto = new PaginationDto(
                 page,
                 size,
-                (int) regencyPage.getTotalElements(),
-                regencyPage.getTotalPages()
+                (int) people.getTotalElements(),
+                people.getTotalPages()
         );
 
         PageResponseDto<People> response = this.sendPagedResponse(
-                regencyPage,
+                people,
                 paginationDto,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),

@@ -1,6 +1,7 @@
 package com.enigmacamp.springbootdatapenduduk.service;
 
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.PeopleRequestDto;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.model.District;
 import com.enigmacamp.springbootdatapenduduk.entity.model.People;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Province;
@@ -9,6 +10,8 @@ import com.enigmacamp.springbootdatapenduduk.repository.PeopleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,8 +68,10 @@ public class PeopleService {
         return peopleRepository.save(newPerson);
     }
 
-    public Page<People> findAll(int page, int size) {
-        return peopleRepository.findAll(PageRequest.of(Math.max(page - 1, 0), size));
+    public Page<People> findAll(QueryParamDto params) {
+        Pageable pageable = PageRequest.of(Math.max(params.getPage() - 1, 0), params.getSize());
+        Specification<People> specification = PeopleRepository.hasSearchQuery(params);
+        return peopleRepository.findAll(specification, pageable);
     }
 
     public People findByNik(String nik) {

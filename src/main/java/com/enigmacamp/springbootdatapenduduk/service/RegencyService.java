@@ -1,5 +1,6 @@
 package com.enigmacamp.springbootdatapenduduk.service;
 
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.RegencyRequestDto;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Province;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Regency;
@@ -7,6 +8,8 @@ import com.enigmacamp.springbootdatapenduduk.repository.RegencyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -60,8 +63,10 @@ public class RegencyService implements BaseService<Regency, Integer> {
     }
 
     @Override
-    public Page<Regency> findAll(int page, int size) {
-        return regencyRepository.findAll(PageRequest.of(Math.max(page - 1, 0), size));
+    public Page<Regency> findAll(QueryParamDto params) {
+        Pageable pageable = PageRequest.of(Math.max(params.getPage() - 1, 0), params.getSize());
+        Specification<Regency> specification = RegencyRepository.hasSearchQuery(params);
+        return regencyRepository.findAll(specification, pageable);
     }
 
     @Override

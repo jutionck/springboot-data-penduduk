@@ -2,6 +2,7 @@ package com.enigmacamp.springbootdatapenduduk.controller;
 
 import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
 import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.RegencyRequestDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
@@ -45,9 +46,10 @@ public class RegencyController extends BaseController<Regency> {
     @GetMapping(AppRoutes.GET_REGENCY_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String q
     ) {
-        Page<Regency> regencyPage = regencyService.findAll(page, size);
+        Page<Regency> regencyPage = regencyService.findAll(new QueryParamDto(q, page, size));
         PaginationDto paginationDto = new PaginationDto(
                 page,
                 size,

@@ -3,6 +3,7 @@ package com.enigmacamp.springbootdatapenduduk.controller;
 import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
 import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.DistrictRequestDto;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
 import com.enigmacamp.springbootdatapenduduk.entity.model.District;
@@ -43,9 +44,10 @@ public class DistrictController extends BaseController<District> {
     @GetMapping(AppRoutes.GET_DISTRICT_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String q
     ) {
-        Page<District> districtPage = districtService.findAll(page, size);
+        Page<District> districtPage = districtService.findAll(new QueryParamDto(q, page, size));
         PaginationDto paginationDto = new PaginationDto(
                 page,
                 size,

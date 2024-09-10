@@ -1,11 +1,13 @@
 package com.enigmacamp.springbootdatapenduduk.service;
 
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Province;
 import com.enigmacamp.springbootdatapenduduk.repository.ProvinceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,9 +27,10 @@ public class ProvinceService implements BaseService<Province, Integer> {
     }
 
     @Override
-    public Page<Province> findAll(int page, int size) {
-        Pageable pageable = PageRequest.of(Math.max(page - 1, 0), size);
-        return provinceRepository.findAll(pageable);
+    public Page<Province> findAll(QueryParamDto params) {
+        Pageable pageable = PageRequest.of(Math.max(params.getPage() - 1, 0), params.getSize());
+        Specification<Province> specification = ProvinceRepository.hasSearchQuery(params);
+        return provinceRepository.findAll(specification, pageable);
     }
 
     @Override

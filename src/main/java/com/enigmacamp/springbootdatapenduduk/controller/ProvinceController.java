@@ -3,6 +3,7 @@ package com.enigmacamp.springbootdatapenduduk.controller;
 import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
 import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Province;
 import com.enigmacamp.springbootdatapenduduk.service.ProvinceService;
@@ -39,23 +40,20 @@ public class ProvinceController extends BaseController<Province> {
     @GetMapping(AppRoutes.GET_PROVINCE_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String q
     ) {
-        Page<Province> provinces = provinceService.findAll(page, size);
-        PaginationDto paginationDto = new PaginationDto(
-                page,
-                size,
-                (int) provinces.getTotalElements(),
-                provinces.getTotalPages()
-        );
+        Page<Province> provincePage = provinceService.findAll(new QueryParamDto(q, page, size));
+        PaginationDto paginationDto = new PaginationDto(page, size, (int) provincePage.getTotalElements(), provincePage.getTotalPages());
 
         PageResponseDto<Province> response = this.sendPagedResponse(
-                provinces,
+                provincePage,
                 paginationDto,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
                         AppResponse.SUCCESS_RETRIEVE_LIST)
         );
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
