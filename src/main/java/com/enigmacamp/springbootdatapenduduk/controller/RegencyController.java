@@ -1,12 +1,14 @@
 package com.enigmacamp.springbootdatapenduduk.controller;
 
+import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
+import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.RegencyRequestDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.ErrorResponseDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.PaginationDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.ResponseEntityDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.ResponseStatusDto;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
+import com.enigmacamp.springbootdatapenduduk.entity.model.Province;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Regency;
 import com.enigmacamp.springbootdatapenduduk.service.RegencyService;
+import com.enigmacamp.springbootdatapenduduk.utils.ErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,34 +21,28 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/regencies")
+@RequestMapping(AppRoutes.API_VERSION)
 @RequiredArgsConstructor
 public class RegencyController extends BaseController<Regency> {
     private final RegencyService regencyService;
 
-    @PostMapping
+    @PostMapping(AppRoutes.POST_REGENCY)
     public ResponseEntity<?> createHandler(@RequestBody RegencyRequestDto payload) {
         try {
             Regency regency = regencyService.create(payload);
-            ResponseEntityDto<Regency> response = this.sendResponse(
+            SingleResponseDto<Regency> response = this.sendResponse(
                     regency,
                     new ResponseStatusDto(
                             HttpStatus.CREATED.value(),
-                            "Successfully created regency")
+                            AppResponse.SUCCESS_CREATED)
             );
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-    @GetMapping
+    @GetMapping(AppRoutes.GET_REGENCY_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
@@ -59,87 +55,69 @@ public class RegencyController extends BaseController<Regency> {
                 regencyPage.getTotalPages()
         );
 
-        ResponseEntityDto<List<Regency>> response = this.sendPagedResponse(
+        PageResponseDto<Regency> response = this.sendPagedResponse(
                 regencyPage,
                 paginationDto,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched regencies")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/province/{id}")
+    @GetMapping(AppRoutes.GET_REGENCY_BY_PROVINCE)
     public ResponseEntity<?> getByProvinceHandler(@PathVariable int id) {
-        List<Regency> regencyPage = regencyService.findByProvince(id);
-        ResponseEntityDto<List<Regency>> response = this.sendPagedResponse(
-                new PageImpl<>(regencyPage),
+        List<Regency> regencies = regencyService.findByProvince(id);
+        PageResponseDto<Regency> response = this.sendPagedResponse(
+                new PageImpl<>(regencies),
                 null,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched regencies")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(AppRoutes.GET_REGENCY)
     public ResponseEntity<?> getHandler(@PathVariable int id) {
         try {
             Regency regency = regencyService.findById(id);
-            ResponseEntityDto<Regency> response = this.sendResponse(
+            SingleResponseDto<Regency> response = this.sendResponse(
                     regency,
                     new ResponseStatusDto(
                             HttpStatus.OK.value(),
-                            "Successfully get regency")
+                            AppResponse.SUCCESS_RETRIEVE)
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-    @PutMapping
+    @PutMapping(AppRoutes.PUT_REGENCY)
     public ResponseEntity<?> updateHandler(@RequestBody RegencyRequestDto payload) {
         try {
             Regency regency = regencyService.update(payload);
-            ResponseEntityDto<Regency> response = this.sendResponse(
+            SingleResponseDto<Regency> response = this.sendResponse(
                     regency,
                     new ResponseStatusDto(
                             HttpStatus.OK.value(),
-                            "Successfully updated regency")
+                            AppResponse.SUCCESS_UPDATED)
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(AppRoutes.DELETE_REGENCY)
     public ResponseEntity<?> deleteHandler(@PathVariable int id) {
         try {
             regencyService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 }

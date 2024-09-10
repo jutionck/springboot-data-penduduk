@@ -1,129 +1,104 @@
 package com.enigmacamp.springbootdatapenduduk.controller;
 
+import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
+import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
 import com.enigmacamp.springbootdatapenduduk.entity.model.Province;
 import com.enigmacamp.springbootdatapenduduk.service.ProvinceService;
+import com.enigmacamp.springbootdatapenduduk.utils.ErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
-
 @RestController
-@RequestMapping("/api/v1/provinces")
+@RequestMapping(AppRoutes.API_VERSION)
 @RequiredArgsConstructor
 public class ProvinceController extends BaseController<Province> {
     private final ProvinceService provinceService;
 
-    @PostMapping
+    @PostMapping(AppRoutes.POST_PROVINCE)
     public ResponseEntity<?> createHandler(@RequestBody Province payload) {
         try {
             Province province = provinceService.create(payload);
-            ResponseEntityDto<Province> response = this.sendResponse(
+            SingleResponseDto<Province> response = this.sendResponse(
                     province,
                     new ResponseStatusDto(
                             HttpStatus.CREATED.value(),
-                            "Successfully created province")
+                            AppResponse.SUCCESS_CREATED)
             );
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-    @GetMapping
+    @GetMapping(AppRoutes.GET_PROVINCE_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<Province> provincePage = provinceService.findAll(page, size);
+        Page<Province> provinces = provinceService.findAll(page, size);
         PaginationDto paginationDto = new PaginationDto(
                 page,
                 size,
-                (int) provincePage.getTotalElements(),
-                provincePage.getTotalPages()
+                (int) provinces.getTotalElements(),
+                provinces.getTotalPages()
         );
 
-        ResponseEntityDto<List<Province>> response = this.sendPagedResponse(
-                provincePage,
+        PageResponseDto<Province> response = this.sendPagedResponse(
+                provinces,
                 paginationDto,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched provinces")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(AppRoutes.GET_PROVINCE)
     public ResponseEntity<?> getHandler(@PathVariable int id) {
         try {
             Province province = provinceService.findById(id);
-            ResponseEntityDto<Province> response = this.sendResponse(
+            SingleResponseDto<Province> response = this.sendResponse(
                     province,
                     new ResponseStatusDto(
                             HttpStatus.OK.value(),
-                            "Successfully get province")
+                            AppResponse.SUCCESS_RETRIEVE)
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-
-    @PutMapping
+    @PutMapping(AppRoutes.PUT_PROVINCE)
     public ResponseEntity<?> updateHandler(@RequestBody Province payload) {
         try {
             Province province = provinceService.update(payload);
-            ResponseEntityDto<Province> response = this.sendResponse(
+            SingleResponseDto<Province> response = this.sendResponse(
                     province,
                     new ResponseStatusDto(
                             HttpStatus.OK.value(),
-                            "Successfully updated province")
+                            AppResponse.SUCCESS_UPDATED)
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(AppRoutes.DELETE_PROVINCE)
     public ResponseEntity<?> deleteHandler(@PathVariable int id) {
         try {
             provinceService.delete(id);
             return ResponseEntity.noContent().build();
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
+
 }

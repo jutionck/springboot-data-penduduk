@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SingleResponseDto<T> implements ResponseEntityDto<T> {
+public class SingleResponseDto<T> {
     private ResponseStatusDto status;
     private T data;
 }

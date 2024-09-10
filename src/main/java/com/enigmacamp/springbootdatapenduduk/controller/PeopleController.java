@@ -1,17 +1,17 @@
 package com.enigmacamp.springbootdatapenduduk.controller;
 
+import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
+import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
 import com.enigmacamp.springbootdatapenduduk.entity.dto.request.PeopleRequestDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.ErrorResponseDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.PaginationDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.ResponseEntityDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.ResponseStatusDto;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
+import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
 import com.enigmacamp.springbootdatapenduduk.entity.model.People;
 import com.enigmacamp.springbootdatapenduduk.service.PeopleService;
+import com.enigmacamp.springbootdatapenduduk.utils.ErrorException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,34 +19,28 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/people")
+@RequestMapping(AppRoutes.API_VERSION)
 @RequiredArgsConstructor
 public class PeopleController extends BaseController<People> {
     private final PeopleService peopleService;
 
-    @PostMapping
+    @PostMapping(AppRoutes.POST_PEOPLE)
     public ResponseEntity<?> createHandler(@RequestBody PeopleRequestDto payload) {
         try {
             People person = peopleService.create(payload);
-            ResponseEntityDto<People> response = this.sendResponse(
+            SingleResponseDto<People> response = this.sendResponse(
                     person,
                     new ResponseStatusDto(
                             HttpStatus.CREATED.value(),
-                            "Successfully created person")
+                            AppResponse.SUCCESS_CREATED)
             );
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 
-    @GetMapping
+    @GetMapping(AppRoutes.GET_PEOPLE_LIST)
     public ResponseEntity<?> listHandler(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
@@ -59,75 +53,69 @@ public class PeopleController extends BaseController<People> {
                 regencyPage.getTotalPages()
         );
 
-        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+        PageResponseDto<People> response = this.sendPagedResponse(
                 regencyPage,
                 paginationDto,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched people")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/province/{id}")
+    @GetMapping(AppRoutes.GET_PEOPLE_BY_PROVINCE)
     public ResponseEntity<?> getByProvinceHandler(@PathVariable int id) {
         List<People> people = peopleService.findByProvince(id);
-        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+        PageResponseDto<People> response = this.sendPagedResponse(
                 new PageImpl<>(people),
                 null,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched people by province")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/city/{id}")
+    @GetMapping(AppRoutes.GET_PEOPLE_BY_REGENCY)
     public ResponseEntity<?> getByRegencyHandler(@PathVariable int id) {
         List<People> people = peopleService.findByRegency(id);
-        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+        PageResponseDto<People> response = this.sendPagedResponse(
                 new PageImpl<>(people),
                 null,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched people by regency")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/district/{id}")
+    @GetMapping(AppRoutes.GET_PEOPLE_BY_DISTRICT)
     public ResponseEntity<?> getByDistrictHandler(@PathVariable int id) {
         List<People> people = peopleService.findByDistrict(id);
-        ResponseEntityDto<List<People>> response = this.sendPagedResponse(
+        PageResponseDto<People> response = this.sendPagedResponse(
                 new PageImpl<>(people),
                 null,
                 new ResponseStatusDto(
                         HttpStatus.OK.value(),
-                        "Successfully fetched people by district")
+                        AppResponse.SUCCESS_RETRIEVE_LIST)
         );
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(AppRoutes.GET_PEOPLE)
     public ResponseEntity<?> getHandler(@PathVariable int id) {
         try {
             People person = peopleService.findById(id);
-            ResponseEntityDto<People> response = this.sendResponse(
+            SingleResponseDto<People> response = this.sendResponse(
                     person,
                     new ResponseStatusDto(
                             HttpStatus.OK.value(),
-                            "Successfully get person")
+                            AppResponse.SUCCESS_RETRIEVE)
             );
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (ResponseStatusException ex) {
-            ErrorResponseDto errorResponse = this.sendErrorResponse(
-                    ex.getStatusCode().value(),
-                    ex.getReason()
-            );
-            return new ResponseEntity<>(
-                    errorResponse,
-                    HttpStatusCode.valueOf(ex.getStatusCode().value()));
+            return ErrorException.handleResponseStatusException(ex);
         }
     }
 }
