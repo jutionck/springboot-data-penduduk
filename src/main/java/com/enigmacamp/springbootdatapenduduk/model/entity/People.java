@@ -1,4 +1,4 @@
-package com.enigmacamp.springbootdatapenduduk.entity.model;
+package com.enigmacamp.springbootdatapenduduk.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package com.enigmacamp.springbootdatapenduduk.entity.dto.pagination;
+package com.enigmacamp.springbootdatapenduduk.model.dto.pagination;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

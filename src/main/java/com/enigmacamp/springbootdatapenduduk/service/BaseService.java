@@ -1,6 +1,6 @@
 package com.enigmacamp.springbootdatapenduduk.service;
 
-import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
+import com.enigmacamp.springbootdatapenduduk.model.dto.request.QueryParamDto;
 import org.springframework.data.domain.Page;
 
 public interface BaseService<T, ID> {

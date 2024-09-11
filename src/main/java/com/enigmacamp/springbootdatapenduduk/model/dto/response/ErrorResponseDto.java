@@ -1,4 +1,4 @@
-package com.enigmacamp.springbootdatapenduduk.entity.dto.response;
+package com.enigmacamp.springbootdatapenduduk.model.dto.response;
 
 import lombok.*;
 

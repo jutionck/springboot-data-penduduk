@@ -1,10 +1,8 @@
 package com.enigmacamp.springbootdatapenduduk.controller;
 
-import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
+import com.enigmacamp.springbootdatapenduduk.model.dto.pagination.PaginationDto;
+import com.enigmacamp.springbootdatapenduduk.model.dto.response.*;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public class BaseController<T> {
     protected SingleResponseDto<T> sendResponse(T data, ResponseStatusDto status) {

@@ -1,9 +1,9 @@
 package com.enigmacamp.springbootdatapenduduk.service;
 
-import com.enigmacamp.springbootdatapenduduk.entity.dto.request.DistrictRequestDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
-import com.enigmacamp.springbootdatapenduduk.entity.model.District;
-import com.enigmacamp.springbootdatapenduduk.entity.model.Regency;
+import com.enigmacamp.springbootdatapenduduk.model.dto.request.DistrictRequestDto;
+import com.enigmacamp.springbootdatapenduduk.model.dto.request.QueryParamDto;
+import com.enigmacamp.springbootdatapenduduk.model.entity.District;
+import com.enigmacamp.springbootdatapenduduk.model.entity.Regency;
 import com.enigmacamp.springbootdatapenduduk.repository.DistrictRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,16 +1,16 @@
-package com.enigmacamp.springbootdatapenduduk.entity.model;
+package com.enigmacamp.springbootdatapenduduk.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "provinces")
+@Table(name = "districts")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Province {
+public class District {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,4 +21,7 @@ public class Province {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "regency_id", referencedColumnName = "id")
+    private Regency regency;
 }

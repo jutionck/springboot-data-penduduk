@@ -1,4 +1,4 @@
-package com.enigmacamp.springbootdatapenduduk.entity.dto.request;
+package com.enigmacamp.springbootdatapenduduk.model.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

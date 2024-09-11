@@ -1,7 +1,7 @@
 package com.enigmacamp.springbootdatapenduduk.repository;
 
-import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
-import com.enigmacamp.springbootdatapenduduk.entity.model.Regency;
+import com.enigmacamp.springbootdatapenduduk.model.dto.request.QueryParamDto;
+import com.enigmacamp.springbootdatapenduduk.model.entity.Regency;
 import com.enigmacamp.springbootdatapenduduk.specification.BaseSpecification;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,11 +2,11 @@ package com.enigmacamp.springbootdatapenduduk.controller;
 
 import com.enigmacamp.springbootdatapenduduk.config.AppResponse;
 import com.enigmacamp.springbootdatapenduduk.config.AppRoutes;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.request.PeopleRequestDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.request.QueryParamDto;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.response.*;
-import com.enigmacamp.springbootdatapenduduk.entity.dto.pagination.PaginationDto;
-import com.enigmacamp.springbootdatapenduduk.entity.model.People;
+import com.enigmacamp.springbootdatapenduduk.model.dto.request.PeopleRequestDto;
+import com.enigmacamp.springbootdatapenduduk.model.dto.request.QueryParamDto;
+import com.enigmacamp.springbootdatapenduduk.model.dto.response.*;
+import com.enigmacamp.springbootdatapenduduk.model.dto.pagination.PaginationDto;
+import com.enigmacamp.springbootdatapenduduk.model.entity.People;
 import com.enigmacamp.springbootdatapenduduk.service.PeopleService;
 import com.enigmacamp.springbootdatapenduduk.utils.ErrorException;
 import lombok.RequiredArgsConstructor;
