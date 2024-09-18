@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  API_PORT: "8080"              # Port di mana aplikasi akan berjalan
+  DB_HOST: "db-service"                 # Nama layanan (service) database yang akan diakses oleh aplikasi
+  DB_PORT: "5432"               # Port default PostgreSQL
+  DB_NAME: "jutionck"           # Nama database yang akan diakses oleh aplikasi
+  DDL_AUTO: "update"            # Pengaturan Hibernate untuk auto schema update
+  JWT_EXPIRATION: "36000"       # Waktu kadaluarsa untuk JWT
+  ADMIN_USERNAME: "admin"       # Username untuk akun admin aplikasi
