@@ -1,0 +1,32 @@
+# version: '3.8' # Versi compose 2 tidak diperlukan lagi
+
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    depends_on:
+      db:
+        condition: service_healthy  # Pastikan db sehat sebelum app dimulai
+
+  db:
+    image: postgres:alpine
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - datapenduduk-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  datapenduduk-volume:
+    name: datapenduduk-volume

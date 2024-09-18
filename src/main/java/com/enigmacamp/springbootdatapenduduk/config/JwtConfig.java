@@ -26,7 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration // menandakan sebagai class configuration dan otomatis di panggil saar app dijalankan
 @RequiredArgsConstructor
-public class JwtConfiguration {
+public class JwtConfig {
     private final UserRepository userRepository;
 
     // @Bean -> adalah object yang diciptakan dari Spring IoC Container.

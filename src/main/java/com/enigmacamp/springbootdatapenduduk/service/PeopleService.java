@@ -32,6 +32,7 @@ public class PeopleService {
     private final ProvinceService provinceService;
     private final RegencyService regencyService;
     private final DistrictService districtService;
+    private final EmailService emailService;
 
     public People create(PeopleRequestDto payload) {
         validateServiceHours();
@@ -65,7 +66,10 @@ public class PeopleService {
                 .regency(regency)
                 .district(district)
                 .build();
-        return peopleRepository.save(newPerson);
+        peopleRepository.save(newPerson);
+        // Send mail here
+        emailService.sendEmail("jutionck@gmail.com", newPerson.getNik());
+        return newPerson;
     }
 
     public Page<People> findAll(QueryParamDto params) {
