@@ -74,3 +74,65 @@ ADMIN_PASSWORD=password
 ```bash
 docker compose up
 ```
+
+## Kubernetes
+Server Kubernetes
+```bash
+kubectl --kubeconfig=/<pathtodirectory>/k8s-1-31-1-do-0-sgp1-1726628074294-kubeconfig.yaml get nodes
+```
+
+Apply Kubernetes:
+```bash
+# Terapkan ConfigMap untuk konfigurasi aplikasi
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/app-config.yaml
+
+# Terapkan Secret untuk menyimpan credential sensitif seperti password
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/app-secrets.yaml
+
+# Terapkan PersistentVolumeClaim (PVC) untuk PostgreSQL
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/postgres-pvc.yaml
+
+# Terapkan Deployment untuk PostgreSQL (Database)
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/db-deployment.yaml
+
+# Terapkan Service untuk PostgreSQL (Database)
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/db-service.yaml
+
+# Terapkan Deployment untuk Aplikasi
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/app-deployment.yaml
+
+# Terapkan Service untuk Aplikasi
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml apply -f k8s/app-service.yaml
+```
+
+Penjelasan Singkat:
+- `app-config.yaml`: File ConfigMap untuk mengatur variabel konfigurasi aplikasi.
+- `app-secrets.yaml`: File Secret untuk menyimpan informasi sensitif seperti password database.
+- `postgres-pvc.yaml`: File PersistentVolumeClaim (PVC) untuk menyimpan data PostgreSQL secara persisten.
+- `db-deployment.yaml`: File Deployment untuk PostgreSQL (database).
+- `db-service.yaml`: File Service untuk mengekspos PostgreSQL dalam cluster Kubernetes.
+- `app-deployment.yaml`: File Deployment untuk aplikasi Anda.
+- `app-service.yaml`: File Service untuk mengekspos aplikasi Anda, sehingga dapat diakses dari luar melalui NodePort.
+
+- Setelah menjalankan semua perintah ini, Anda dapat memverifikasi status dari resource yang diterapkan dengan perintah berikut:
+
+```bash
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml get pods
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml get svc
+```
+Berikutnya untuk akses atau uji coba menggunakan postman:
+
+### Cara 1
+Cara 1 kita lakukan `port-forwading`:
+```bash
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml port-forward svc/app-service 8080:8080
+```
+Setelah itu akses menggunakan `postman` menggunakan url `localhost:8080`.
+
+### Cara 2
+Cara 2 kita akses langsung `IP NodePort` dan `Port NodePort` nya. Cara cek nya seperti berikut:
+```bash
+kubectl --kubeconfig=/Users/jutioncandrakirana/.kube/config.yaml get nodes -o wide
+```
+
+Setelah itu akses menggunakan `postman` menggunakan url `http://167.71.192.246:32090`.
